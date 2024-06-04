@@ -1,0 +1,3 @@
+venv/
+/virtual_store/Book/migrations
+/virtual_store/transactions/migrations
