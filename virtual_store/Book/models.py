@@ -3,7 +3,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 from pathlib import Path
-from Book.pdf_handler import write_preview, write_image
+from Book.pdf_handler import write_preview, write_image, get_folders
+import random
 
 
 
@@ -11,16 +12,18 @@ from Book.pdf_handler import write_preview, write_image
 concatenar_con_aleatorios = lambda texto: texto + ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=6))
 #genera uuid
 
+PDFS, PREVIEWS, IMAGES = get_folders()
+
 class Book_File(models.Model):
 
-    file = models.FileField()
+    file = models.FileField(upload_to='media')
     slug = models.SlugField(unique=True)
 
 
 class Preview_Book_File(models.Model):
 
     book_original = models.ForeignKey(Book_File, on_delete=models.CASCADE)
-    file = models.FileField()
+    file = models.FileField(upload_to='media')
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
@@ -43,7 +46,7 @@ class Preview_Book_File(models.Model):
 
 class Image_Book(models.Model):
 
-    imagen = models.ImageField()
+    imagen = models.ImageField('media')
     slug = models.SlugField(unique=True)
 
 def save(self, *args, **kwargs):
@@ -123,12 +126,10 @@ class Book(models.Model):
         self.slug = slugify(value, allow_unicode=True)
         super(Book, self).save(*args, **kwargs)
 
-
+"""
 @receiver(post_save, sender=Book_File)
 def save_Preview_Book_File(sender, instance, **kwargs):
     #Despues de crear un documento se crea el preview y la imagen de portada.
-    aux_path = instance.file
-    dir_path = aux_path.parent
     state = True
     value = concatenar_con_aleatorios("preview_file")
     
@@ -141,7 +142,7 @@ def save_Preview_Book_File(sender, instance, **kwargs):
         except:
             state = False
     
-    dir = write_preview(aux_path, dir_path, value)
+    dir = write_preview(PDFS, PREVIEWS, value)
     peview = Preview_Book_File.objects.create(book_original=instance, file=dir)
     preview.save() # se guarda
 
@@ -157,7 +158,7 @@ def save_Preview_Book_File(sender, instance, **kwargs):
             state = False
     
 
-    dir = extract_image(dir, dirpath, value)
+    dir = extract_image(PDFS, IMAGES, value)
     imagen = Image_Book.objects.create(image=dir)
     imagen.save()
 
@@ -171,3 +172,4 @@ def delete_pre_saved_pdf(sender, instance, **kwargs):
     aux = Book_File.objects.get(id=instance.book_file)
     pre = Pre_saved_PDF.objects.get(pdf=aux)
     pre.delete()
+"""

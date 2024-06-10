@@ -14,10 +14,13 @@ class Pdf_Book_view(viewsets.ModelViewSet):
     queryset = Book_File.objects.all()
     serializer_class = Book_File_serializer
     lookup_field = 'slug'
+    permission_classes = []
 
     def create(self, request):
 
+        print(request.POST)
         file = request.FILES['file']
+        
         slug = concatenar_con_aleatorios('pdf_file')
         aux = Book_File.objects.create(file = file, slug=slug)
         aux.save()
@@ -27,7 +30,7 @@ class Pre_saved_PDF_view(viewsets.ModelViewSet):
 #Nota estos son los pdf a medio guardar, primero se salvan en la base de datos y luego se introduce el autor y todas esas cosas.
     queryset = Pre_saved_PDF.objects.all()
     serializer_class = Pre_saved_PDF_serializer()
-    lookup_field = 'slug'
+
 
     def retrieve(self, request, *args, **kwargs):
 

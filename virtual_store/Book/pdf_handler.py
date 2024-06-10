@@ -40,5 +40,11 @@ def write_image(dir, dirpath, name):
     img.save(dir)
     return dir
 
+
+def get_folders():
+
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    return BASE_DIR / 'media', BASE_DIR / 'media', BASE_DIR / 'media'
+
     
 

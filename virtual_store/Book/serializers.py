@@ -36,5 +36,4 @@ class Pre_saved_PDF_serializer(serializers.ModelSerializer):
     class Meta:
        
         model = Pre_saved_PDF
-        lookup_field = 'slug'
         fields = ['pdf, preview_pdf', 'imagen']

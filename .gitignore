@@ -2,3 +2,10 @@ venv/
 /virtual_store/Book/migrations
 /virtual_store/transactions/migrations
 /virtual_store/Book/__pycache__
+/virtual_store/books
+/virtual_store/images
+/virtual_store/previews
+/virtual_store/virtual_store/__pycache__
+/virtual_store/db.sqlite3
+/media/books
+/virtual_store/media
