@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 from pathlib import Path
-from Book.pdf_handler import write_preview, extract_image
+from Book.pdf_handler import write_preview, write_image
 
 
 
@@ -64,10 +64,17 @@ def save(self, *args, **kwargs):
         super(Image_Book, self).save(*args, **kwargs)
 
 
+class Pre_saved_PDF(models.Model):
+
+    pdf = models.OneToOneField(Book_File, on_delete=models.CASCADE)
+    preview_pdf = models.OneToOneField(Preview_Book_File, on_delete=models.CASCADE)
+    imagen = models.OneToOneField(Image_Book, on_delete=models.CASCADE)
+
+
 class Author(models.Model):
 
-    nombre = models.CharField(max_lenght=255)
-    apellido = models.CharField(max_lenght=255)
+    nombre = models.CharField(max_length=255)
+    apellido = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
@@ -90,10 +97,10 @@ class Author(models.Model):
 
 class Book(models.Model):
 
-    name = models.CharField(max_lenght=255)
+    name = models.CharField(max_length=255)
     autor = models.ForeignKey(Author, on_delete=models.CASCADE)
-    Preview_Book = models.ForeignKey(Preview_Book_File, on_delete=models.CASCADE)
-    Book_file = models.ForeignKey(Book_File, on_delete=models.CASCADE)
+    preview_Book = models.ForeignKey(Preview_Book_File, on_delete=models.CASCADE)
+    book_file = models.ForeignKey(Book_File, on_delete=models.CASCADE)
     price = models.FloatField(default=0)
     is_free = models.BooleanField()
     image = models.ForeignKey(Image_Book, on_delete=models.CASCADE)
@@ -135,8 +142,8 @@ def save_Preview_Book_File(sender, instance, **kwargs):
             state = False
     
     dir = write_preview(aux_path, dir_path, value)
-    aux = Preview_Book_File.objects.create(book_original=instance, file=dir)
-    aux.save() # se guarda
+    peview = Preview_Book_File.objects.create(book_original=instance, file=dir)
+    preview.save() # se guarda
 
     value = concatenar_con_aleatorios("imagen")
     state = True
@@ -151,6 +158,16 @@ def save_Preview_Book_File(sender, instance, **kwargs):
     
 
     dir = extract_image(dir, dirpath, value)
-    aux = Image_Book.objects.create(image=dir)
-    aux.save()
-    
+    imagen = Image_Book.objects.create(image=dir)
+    imagen.save()
+
+    aux = Pre_saved_PDF.objects.create(pdf=instance, preview_pdf=preview, imagen=imagen)
+    aux.save()    
+
+
+@receiver(post_save, sender=Book)
+def delete_pre_saved_pdf(sender, instance, **kwargs):
+
+    aux = Book_File.objects.get(id=instance.book_file)
+    pre = Pre_saved_PDF.objects.get(pdf=aux)
+    pre.delete()
