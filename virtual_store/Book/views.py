@@ -3,8 +3,11 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
-from Book.models import Book_File, Pre_saved_PDF, Author, Book, concatenar_con_aleatorios
+from django.http import FileResponse
+from Book.models import Book_File, Pre_saved_PDF, Author, Book, Preview_Book_File, concatenar_con_aleatorios
 from Book.serializers import * 
+from Book.pdf_handler import write_image, write_preview
+import random
 
 
 
@@ -18,12 +21,55 @@ class Pdf_Book_view(viewsets.ModelViewSet):
 
     def create(self, request):
 
-        print(request.POST)
-        file = request.FILES['file']
-        
-        slug = concatenar_con_aleatorios('pdf_file')
-        aux = Book_File.objects.create(file = file, slug=slug)
-        aux.save()
+        try:
+            file = request.FILES['file']
+            
+            aux = Book_File.objects.create(file = file)
+            aux.save()
+            name = concatenar_con_aleatorios('preview')
+            preview = write_preview(file, name)
+            aux1 = Preview_Book_File.objects.create(book_original=aux, file=preview)
+            aux1.save()
+
+            pre_saved = Pre_saved_PDF.objects.create(pdf=aux, preview_pdf=aux1)
+            pre_saved.save()
+
+            return Response(data={"message":"Pdf Saved"})
+
+        except:
+
+           return Response(data={"message":"Error Fetching File"})
+
+    def retrieve(self, request, *args, **kwargs):
+
+        obj = self.get_object()
+        path = obj.file.path
+        return FileResponse(open(path, 'rb'))
+
+    def delete(self, request, *args, **kwargs):
+
+        obj = self.get_object()
+        obj.delete()
+        return Response({"message":"Object Book file Deleted"})
+
+    def list(self, request, *args, **kwargs):
+
+        slugs = [file_obj.slug for file_obj in self.queryset]
+        return Response(slugs)
+
+
+class Preview_Book_File_view(viewsets.ModelViewSet):
+
+    queryset = Preview_Book_File.objects.all()
+    serializer_class = Preview_Book_File_serializer
+    
+    permission_classes = []
+
+    def retrieve(self, request, *args, **kwargs):
+
+        obj = self.get_object()
+        path = obj.file.path
+        return FileResponse(open(path, 'rb'))
 
 
 class Pre_saved_PDF_view(viewsets.ModelViewSet):
@@ -31,6 +77,19 @@ class Pre_saved_PDF_view(viewsets.ModelViewSet):
     queryset = Pre_saved_PDF.objects.all()
     serializer_class = Pre_saved_PDF_serializer()
 
+    def list(self, request, *args, **kwargs):
+
+        slugs = []
+
+        for i in self.queryset:
+
+            dic = {}
+            dic["file"] = i.pdf.slug
+            dic["preview"] = i.preview_pdf.slug
+
+            slugs.append(dic)
+
+        return Response(slugs)
 
     def retrieve(self, request, *args, **kwargs):
 

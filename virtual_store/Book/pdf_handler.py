@@ -3,12 +3,12 @@ from pypdf import PdfReader, PdfWriter
 import fitz
 from PIL import Image
 
+DIR = Path(__file__).resolve().parent.parent / 'Local'
 
 
-
-def write_preview(path, dirpath, value):
+def write_preview(file, name):
 # crea el pdf preview
-    input_pdf = PdfReader(path)
+    input_pdf = PdfReader(file)
     output_pdf = PdfWriter()
 
     for i in range(10):
@@ -16,16 +16,17 @@ def write_preview(path, dirpath, value):
         page = input_pdf.pages[i]
         output_pdf.add_page(page)
 
-    dir = dirpath + value + ".pdf"
+    name = name + ".pdf"
+    dir = DIR / name
     output_pdf.write(dir)
-    return dir
+    return dir._str
 
 
 
-def write_image(dir, dirpath, name):
+def write_image(file, name):
     
     # Abre el archivo PDF
-    doc = fitz.open(dir)
+    doc = fitz.open(file)
 
     # Extrae la primera página
     page_number = 0
@@ -36,15 +37,6 @@ def write_image(dir, dirpath, name):
     img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
 
     # Guarda la imagen
-    dir = dirpath + name + ".png"
+    dir = DIR + name + ".png"
     img.save(dir)
-    return dir
-
-
-def get_folders():
-
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    return BASE_DIR / 'media', BASE_DIR / 'media', BASE_DIR / 'media'
-
-    
-
+    return dir._str

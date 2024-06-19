@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Book.models import Book_File, Author, Book, Pre_saved_PDF
+from Book.models import Book_File, Author, Book, Pre_saved_PDF, Preview_Book_File
 
 
 
@@ -10,8 +10,17 @@ class Book_File_serializer(serializers.ModelSerializer):
 
         model = Book_File
         lookup_field = 'slug'
-        fields = ["file",]
+        fields = ["file", ]
 
+
+class Preview_Book_File_serializer(serializers.ModelSerializer):
+
+    
+    class Meta:
+
+        model = Preview_Book_File
+        lookup_field = 'slug'
+        fields = ("file", "slug", "book_original")
 
 class Author_serializer(serializers.ModelSerializer):
 

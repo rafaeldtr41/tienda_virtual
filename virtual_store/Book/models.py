@@ -3,33 +3,26 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 from pathlib import Path
-from Book.pdf_handler import write_preview, write_image, get_folders
+from django.core.files.base import ContentFile
 import random
-
 
 
 
 concatenar_con_aleatorios = lambda texto: texto + ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=6))
 #genera uuid
 
-PDFS, PREVIEWS, IMAGES = get_folders()
+
 
 class Book_File(models.Model):
 
     file = models.FileField(upload_to='media')
-    slug = models.SlugField(unique=True)
-
-
-class Preview_Book_File(models.Model):
-
-    book_original = models.ForeignKey(Book_File, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='media')
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):
-    #genera un uuid y lo guarda         
+
         value = concatenar_con_aleatorios("file")
         state = True
+
         while state:
             
             try:
@@ -44,10 +37,35 @@ class Preview_Book_File(models.Model):
         super(Book_File, self).save(*args, **kwargs)
 
 
+
+class Preview_Book_File(models.Model):
+
+    book_original = models.ForeignKey(Book_File, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='media')
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+    #genera un uuid y lo guarda         
+        value = concatenar_con_aleatorios("preview")
+        state = True
+        while state:
+            
+            try:
+                aux = Preview_Book_File.objects.get(slug=value)
+                value = concatenar_con_aleatorios("preview")
+            
+            except:
+
+                state = False
+
+        self.slug = slugify(value, allow_unicode=True)
+        super(Preview_Book_File, self).save(*args, **kwargs)
+
+
 class Image_Book(models.Model):
 
     imagen = models.ImageField('media')
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
 
 def save(self, *args, **kwargs):
     #genera un uuid y lo guarda         
@@ -71,8 +89,8 @@ class Pre_saved_PDF(models.Model):
 
     pdf = models.OneToOneField(Book_File, on_delete=models.CASCADE)
     preview_pdf = models.OneToOneField(Preview_Book_File, on_delete=models.CASCADE)
-    imagen = models.OneToOneField(Image_Book, on_delete=models.CASCADE)
-
+    #imagen = models.OneToOneField(Image_Book, on_delete=models.CASCADE)
+    
 
 class Author(models.Model):
 
@@ -106,7 +124,7 @@ class Book(models.Model):
     book_file = models.ForeignKey(Book_File, on_delete=models.CASCADE)
     price = models.FloatField(default=0)
     is_free = models.BooleanField()
-    image = models.ForeignKey(Image_Book, on_delete=models.CASCADE)
+    image = models.ImageField()
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
@@ -126,7 +144,7 @@ class Book(models.Model):
         self.slug = slugify(value, allow_unicode=True)
         super(Book, self).save(*args, **kwargs)
 
-"""
+
 @receiver(post_save, sender=Book_File)
 def save_Preview_Book_File(sender, instance, **kwargs):
     #Despues de crear un documento se crea el preview y la imagen de portada.
@@ -172,4 +190,3 @@ def delete_pre_saved_pdf(sender, instance, **kwargs):
     aux = Book_File.objects.get(id=instance.book_file)
     pre = Pre_saved_PDF.objects.get(pdf=aux)
     pre.delete()
-"""
