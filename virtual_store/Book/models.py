@@ -125,6 +125,7 @@ class Book(models.Model):
     price = models.FloatField(default=0)
     is_free = models.BooleanField()
     image = models.ImageField()
+    merchant_uuid = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):

@@ -10,3 +10,4 @@ venv/
 /media/books
 /virtual_store/media
 /virtual_store/Local
+/virtual_store/transactions/__pycache__

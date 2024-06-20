@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from Book.models import Book
 
 
@@ -30,7 +33,12 @@ class Pre_Buy_Book(models.Model):
 class Buyed_Book(models.Model):
 
     buy = models.ForeignKey(Pre_Buy_Book, on_delete=models.CASCADE)
-    #id_transaction
+    
 
+@receiver(post_save, sender=User)
+def create_book_register(sender, instance, **kwargs):
 
-
+    aux = Simple_User_articles.objects.create(user=instance)
+    aux.save()
+    token = Token.objects.create(user=instance)
+    token.save()

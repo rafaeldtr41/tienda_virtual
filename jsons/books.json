@@ -1,0 +1,11 @@
+[
+    {
+        "name": "polla",
+        "autor": 1,
+        "price": 3.0,
+        "is_free": true,
+        "book_file": "Book_File object (38)",
+        "preview_book": "Preview_Book_File object (18)",
+        "slug": "name3jpguw"
+    }
+]

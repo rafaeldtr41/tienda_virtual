@@ -67,7 +67,7 @@ class Pdf_Book_view(viewsets.ModelViewSet):
 class Preview_Book_File_view(viewsets.ModelViewSet):
 
     queryset = Preview_Book_File.objects.all()
-    #serializer_class = Preview_Book_File_serializer
+    serializer_class = Preview_Book_File_serializer
     lookup_field = "slug"
     
     permission_classes = []

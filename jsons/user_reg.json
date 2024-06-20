@@ -1,0 +1,12 @@
+[
+    {
+        "username": "morpheus",
+        "email": "a@a.or",
+        "password": "pbkdf2_sha256$720000$hrOIhi7Um3jgdofJ4di2eX$VCrZp9/+Mcy5RCmnUTBQ9c9OpBDVc8Kw85x0hCgYalE="
+    },
+    {
+        "username": "pedro",
+        "email": "a@aaa.org",
+        "password": "12345678"
+    }
+]
