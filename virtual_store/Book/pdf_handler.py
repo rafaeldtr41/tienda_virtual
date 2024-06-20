@@ -19,7 +19,7 @@ def write_preview(file, name):
     name = name + ".pdf"
     dir = DIR / name
     output_pdf.write(dir)
-    return dir._str
+    return dir._str, name
 
 
 

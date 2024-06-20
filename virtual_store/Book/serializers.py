@@ -28,21 +28,26 @@ class Author_serializer(serializers.ModelSerializer):
 
         model = Author
         lookup_field = 'slug'
-        fields = ["nombre", "apellido"]
+        fields = ["nombre", "apellido", "slug"]
 
 
 class Book_Serializer(serializers.ModelSerializer):
 
+    book_file = serializers.CharField(max_length=255)
+    preview_book = serializers.CharField(max_length=255)
+    
     class Meta:
         
         model = Book
         lookup_field = 'slug'
-        fields = ["name", "author", "Preview_Book", "Book_file", "price", "is_free"]
+        fields = ["name", "autor", "price", "is_free", "book_file", "preview_book", "slug"]
 
 
-class Pre_saved_PDF_serializer(serializers.ModelSerializer):
+class Pre_saved_PDF_serializer(serializers.Serializer):
 
     class Meta:
        
         model = Pre_saved_PDF
-        fields = ['pdf, preview_pdf', 'imagen']
+        lookup_field = "id"
+        fields = ['pdf, preview_pdf', 'id']
+

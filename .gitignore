@@ -9,3 +9,4 @@ venv/
 /virtual_store/db.sqlite3
 /media/books
 /virtual_store/media
+/virtual_store/Local
