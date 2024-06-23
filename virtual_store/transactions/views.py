@@ -6,6 +6,8 @@ from transactions.serializers import *
 from transactions.models import *
 from Book.models import Book
 from enzona_api.enzona_business_payment import enzona_business_payment
+from rest_framework import permissions
+from transactions.permmisions import User_perm
 
 
 
@@ -15,8 +17,16 @@ class User_View(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = User_Serializer
 
+    def get_permmisions(self):
+
+        if not self.action == "create":
+
+            return[permissions.IsAuthenticated(), User_perm()]
+
 
 class Logout_View(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
 
@@ -28,6 +38,7 @@ class DATA_TRANSACTIONS_view(viewsets.ModelViewSet):
 
     queryset = DATA_TRANSACTIONS.objects.all()
     serializer_class = DATA_TRANSACTIONS_serializer
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
 class Pre_Buy_Book_View(viewsets.ModelViewSet):
@@ -47,10 +58,21 @@ class Pre_Buy_Book_View(viewsets.ModelViewSet):
         
         return Pre_Buy_Book.objects.create(user=request.user, book=aux)
 
+    def get_permissions(self):
+
+        if self.action == "create":
+
+            return [permissions.IsAuthenticated()]
+
+        else:
+
+            return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
+
 
 #sin testear
 class Pay(APIView):
 
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request, format=None):
 
         user = request.user

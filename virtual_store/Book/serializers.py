@@ -33,14 +33,24 @@ class Author_serializer(serializers.ModelSerializer):
 
 class Book_Serializer(serializers.ModelSerializer):
 
-    book_file = serializers.CharField(max_length=255)
     preview_book = serializers.CharField(max_length=255)
+    book_file = serializers.CharField(max_length=255)
     
     class Meta:
         
         model = Book
         lookup_field = 'slug'
-        fields = ["name", "autor", "price", "is_free", "book_file", "preview_book", "slug"]
+        fields = ["name", "autor", "price", "is_free", "book_file", "preview_book", "slug", "image", "merchant_uuid"]
+
+    def create(self, validated_data):
+
+        original = validated_data.pop('original', None)
+        preview = validated_data.pop('preview', None)
+        original_book = Book_File.objects.get(slug=original)
+        preview_book = Preview_Book_File.objects.get(slug=preview)
+
+        return Book.objects.create(preview_book=preview_book, book_file=original_book, **validated_data)
+
 
 
 class Pre_saved_PDF_serializer(serializers.Serializer):
