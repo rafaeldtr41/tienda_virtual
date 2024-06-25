@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from transactions.models import Pre_Buy_Book, DATA_TRANSACTIONS
+from django.contrib.auth.hashers import make_password
 
 
 
@@ -11,6 +12,11 @@ class User_Serializer(serializers.ModelSerializer):
 
         model = User
         fields = ["username", "email", "password"]
+
+    def create(self, validated_data):
+        # Hash the password before saving
+        validated_data["password"] = make_password(validated_data["password"])
+        return super().create(validated_data)
 
 
 class DATA_TRANSACTIONS_serializer(serializers.ModelSerializer):
