@@ -147,3 +147,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITE_LIST = (
     'pon la url de angular aqui'
 )
+
+ALLOWED_HOSTS = ["0.0.0.0"]
