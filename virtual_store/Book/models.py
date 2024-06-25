@@ -119,7 +119,7 @@ class Author(models.Model):
 class Book(models.Model):
 
     name = models.CharField(max_length=255)
-    autor = models.ForeignKey(Author, on_delete=models.CASCADE)
+    autor = models.CharField(max_length=255)
     preview_book = models.ForeignKey(Preview_Book_File, on_delete=models.CASCADE)
     book_file = models.ForeignKey(Book_File, on_delete=models.CASCADE)
     price = models.FloatField(default=0)
