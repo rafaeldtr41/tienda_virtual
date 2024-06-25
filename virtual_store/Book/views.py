@@ -65,16 +65,7 @@ class Pdf_Book_view(viewsets.ModelViewSet):
         slugs = [file_obj.slug for file_obj in self.queryset]
         return Response(slugs)
 
-    def get_permissions(self):
-
-        if not self.action == "retrieve":
-
-            return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
-
-        else:
-
-            return(permissions.IsAuthenticated(), User_Books())
-
+   
 
 class Preview_Book_File_view(viewsets.ModelViewSet):
 
@@ -90,19 +81,14 @@ class Preview_Book_File_view(viewsets.ModelViewSet):
         path = obj.file.path
         return FileResponse(open(path, 'rb'))
 
-    def get_permissions(self):
-
-        if not self.action == "retrieve":
-
-            return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
-
+    
 
 class Pre_saved_PDF_view(viewsets.ModelViewSet):
 #Nota estos son los pdf a medio guardar, primero se salvan en la base de datos y luego se introduce el autor y todas esas cosas.
     queryset = Pre_saved_PDF.objects.all()
     lookup_field = "id"
     serializer_class = Pre_saved_PDF_serializer
-    permmisions_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    #permmisions_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
     def list(self, request, *args, **kwargs):
 
@@ -131,7 +117,7 @@ class Author_view(viewsets.ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = Author_serializer
     lookup_field = 'slug'
-    permmisions_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    #permmisions_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
 class Book_view(viewsets.ModelViewSet):
@@ -148,11 +134,4 @@ class Book_view(viewsets.ModelViewSet):
         response.data['books'] = books
         return response
 
-    def get_permissions(self):
-
-        if self.action == "create" or self.action == "delete" or self.action == "update":
-
-            return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
-
-        else: 
-            return []
+   
