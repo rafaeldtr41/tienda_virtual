@@ -22,6 +22,7 @@ class Pdf_Book_view(viewsets.ModelViewSet):
     serializer_class = Book_File_serializer
     lookup_field = 'slug'
     permission_classes = []
+    caching_class = None
 
     def create(self, request):
 
