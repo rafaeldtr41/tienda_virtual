@@ -66,7 +66,9 @@ class Pdf_Book_view(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
+        self.queryset = Book_File.objects.all()
         slugs = [file_obj.slug for file_obj in self.queryset]
+
         return Response(slugs)
 
     def get_permissions(self):
@@ -94,6 +96,7 @@ class Preview_Book_File_view(viewsets.ModelViewSet):
         obj = self.get_object()
         path = obj.file.path
         return FileResponse(open(path, 'rb'))
+    
 
     def get_permissions(self):
 
@@ -113,6 +116,7 @@ class Pre_saved_PDF_view(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
 
         slugs = []
+        self.queryset = Pre_saved_PDF.objects.all()
 
         for i in self.queryset:
 
