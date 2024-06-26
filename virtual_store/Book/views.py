@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
@@ -143,6 +144,7 @@ class Book_view(viewsets.ModelViewSet):
 
      
     def retrieve(self, request, *args, **kwargs):
+        
         response =super().retrieve(request, *args, **kwargs)
         obj = self.get_object()
         books = {"original": obj.book_file.slug, "preview": obj.preview_book.slug }
@@ -157,3 +159,14 @@ class Book_view(viewsets.ModelViewSet):
 
         else: 
             return []
+        
+class get_photo(viewsets.ModelViewSet):
+
+    queryset = Book.objects.all()
+    serializer_class = Book_Serializer
+    lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+
+        instance = self.get_object()
+        return FileResponse(open(instance.image.path, 'rb'))

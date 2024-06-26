@@ -12,6 +12,7 @@ router.register(r'not_reg_pdf', Pre_saved_PDF_view, basename=Pre_saved_PDF)
 router.register(r'authors', Author_view, basename=Author)
 router.register(r'books', Book_view, basename=Book)
 router.register(r'preview_pdf', Preview_Book_File_view, basename=Preview_Book_File)
+router.register(r'get_image', get_photo)
 
 urlpatterns = [
 
