@@ -8,6 +8,7 @@ from django.http import FileResponse
 from Book.models import Book_File, Pre_saved_PDF, Author, Book, Preview_Book_File, concatenar_con_aleatorios
 from Book.serializers import * 
 from Book.pdf_handler import write_image, write_preview
+from rest_framework.authentication import TokenAuthentication
 from Book.permmisions import User_Books
 from rest_framework import permissions
 import random 
@@ -20,6 +21,7 @@ import os
 class Pdf_Book_view(viewsets.ModelViewSet):
 
     queryset = Book_File.objects.all()
+    authentication_classes = (TokenAuthentication,)
     serializer_class = Book_File_serializer
     lookup_field = 'slug'
     permission_classes = []
@@ -82,6 +84,7 @@ class Preview_Book_File_view(viewsets.ModelViewSet):
 
     queryset = Preview_Book_File.objects.all()
     serializer_class = Preview_Book_File_serializer
+    authentication_classes = (TokenAuthentication,)
     lookup_field = "slug"
     
     permission_classes = []
@@ -103,6 +106,7 @@ class Pre_saved_PDF_view(viewsets.ModelViewSet):
 #Nota estos son los pdf a medio guardar, primero se salvan en la base de datos y luego se introduce el autor y todas esas cosas.
     queryset = Pre_saved_PDF.objects.all()
     lookup_field = "id"
+    authentication_classes = (TokenAuthentication,)
     serializer_class = Pre_saved_PDF_serializer
     permmisions_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
@@ -133,6 +137,7 @@ class Author_view(viewsets.ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = Author_serializer
     lookup_field = 'slug'
+    authentication_classes = (TokenAuthentication,)
     permmisions_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
@@ -140,6 +145,7 @@ class Book_view(viewsets.ModelViewSet):
 # Cuando se vaya a salvar hay que pedir a pre_saved book el elemento y un autor
     queryset = Book.objects.all()
     serializer_class = Book_Serializer
+    authentication_classes = (TokenAuthentication,)
     lookup_field = 'slug'
 
      

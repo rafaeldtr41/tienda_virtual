@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from django.contrib.auth import logout
 from transactions.serializers import *
 from transactions.models import *
+from rest_framework.authentication import TokenAuthentication
 from Book.models import Book
+
 from enzona_api.enzona_business_payment import enzona_business_payment
 from rest_framework import permissions
 from transactions.permmisions import User_perm
@@ -16,6 +18,7 @@ class User_View(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = User_Serializer
+    authentication_classes = (TokenAuthentication,)
 
     def get_permmisions(self):
 
@@ -26,6 +29,7 @@ class User_View(viewsets.ModelViewSet):
 
 class Logout_View(APIView):
 
+    authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
@@ -38,6 +42,7 @@ class DATA_TRANSACTIONS_view(viewsets.ModelViewSet):
 
     queryset = DATA_TRANSACTIONS.objects.all()
     serializer_class = DATA_TRANSACTIONS_serializer
+    authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
 
@@ -45,6 +50,7 @@ class Pre_Buy_Book_View(viewsets.ModelViewSet):
 
     queryset = Pre_Buy_Book.objects.all()
     serializer_class = Pre_Buy_Book_serializer
+    authentication_classes = (TokenAuthentication,)
 
     def create(self, validated_data, request):
 
@@ -72,6 +78,7 @@ class Pre_Buy_Book_View(viewsets.ModelViewSet):
 #sin testear
 class Pay(APIView):
 
+    authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request, format=None):
 
