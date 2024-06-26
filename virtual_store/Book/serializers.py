@@ -44,8 +44,8 @@ class Book_Serializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        original = validated_data.pop('original', None)
-        preview = validated_data.pop('preview', None)
+        original = validated_data.pop('book_file', None)
+        preview = validated_data.pop('preview_book', None)
         original_book = Book_File.objects.get(slug=original)
         preview_book = Preview_Book_File.objects.get(slug=preview)
 
