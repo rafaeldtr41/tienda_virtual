@@ -34,7 +34,7 @@ class Buyed_Book(models.Model):
 
     buy = models.ForeignKey(Pre_Buy_Book, on_delete=models.CASCADE)
     
-
+"""
 @receiver(post_save, sender=User)
 def create_book_register(sender, instance, **kwargs):
 
@@ -42,3 +42,4 @@ def create_book_register(sender, instance, **kwargs):
     aux.save()
     token = Token.objects.create(user=instance)
     token.save()
+"""
