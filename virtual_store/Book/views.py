@@ -98,13 +98,6 @@ class Preview_Book_File_view(viewsets.ModelViewSet):
         return FileResponse(open(path, 'rb'))
     
 
-    def get_permissions(self):
-
-        if not self.action == "retrieve":
-
-            return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
-
-
 class Pre_saved_PDF_view(viewsets.ModelViewSet):
 #Nota estos son los pdf a medio guardar, primero se salvan en la base de datos y luego se introduce el autor y todas esas cosas.
     queryset = Pre_saved_PDF.objects.all()
