@@ -198,15 +198,15 @@ class Noticia_get_Photo_View(APIView):
 
     def get(self, request, slug):
 
-        #try:
+        try:
 
             aux = Noticia.objects.get(slug=slug)
             path = aux.imagen.path
             return FileResponse(open(path, 'rb'))
         
-        #except:
+        except:
 
-            #return Response({"message":"Imagen no encontrada"}, status=404)
+            return Response({"message":"Imagen no encontrada"}, status=404)
 
 
 class get_free_books(APIView):

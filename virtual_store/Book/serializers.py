@@ -67,5 +67,5 @@ class Noticia_Serializer(serializers.ModelSerializer):
     class Meta: 
 
         model = Noticia
-        lookup_field = "id"
-        fields = ["titulo", "texto", "slug"]
+        lookup_field = "slug"
+        fields = ["titulo", "texto", "slug", "imagen"]

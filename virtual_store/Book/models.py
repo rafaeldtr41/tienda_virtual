@@ -150,9 +150,9 @@ class Book(models.Model):
 class Noticia(models.Model):
 
     titulo = models.CharField( max_length=255)
-    imagen = models.ImageField()
+    imagen = models.ImageField(default="P1190517_uJ5T2cc.JPG")
     texto = models.TextField()
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(blank=True, null=True, unique=True)
 
     def save(self, *args, **kwargs):
          
