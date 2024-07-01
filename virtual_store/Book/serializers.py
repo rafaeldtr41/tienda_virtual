@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Book.models import Book_File, Author, Book, Pre_saved_PDF, Preview_Book_File
+from Book.models import Book_File, Author, Book, Pre_saved_PDF, Preview_Book_File, Noticia
 
 
 
@@ -40,7 +40,7 @@ class Book_Serializer(serializers.ModelSerializer):
         
         model = Book
         lookup_field = 'slug'
-        fields = ["name", "autor", "price", "is_free", "book_file", "preview_book", "slug", "image", "merchant_uuid"]
+        fields = ["name", "autor", "price", "is_free", "book_file", "preview_book", "slug", "image", "merchant_uuid", "description"]
 
     def create(self, validated_data):
 
@@ -61,3 +61,11 @@ class Pre_saved_PDF_serializer(serializers.Serializer):
         lookup_field = "id"
         fields = ['pdf, preview_pdf', 'id']
 
+
+class Noticia_Serializer(serializers.ModelSerializer):
+
+    class Meta: 
+
+        model = Noticia
+        lookup_field = "id"
+        fields = ["titulo", "texto", "slug"]

@@ -14,6 +14,7 @@ router.register(r'data_transaction', DATA_TRANSACTIONS_view, basename=DATA_TRANS
 urlpatterns = [
     path('logout/', Logout_View.as_view(), name="logout"),
     path('pay/', Pay.as_view(), name="pay"),
+    path('get_buyed_books', get_mi_biblioteca_books.as_view(), name="get_biblioteca"),
     ]
 
 urlpatterns += router.urls

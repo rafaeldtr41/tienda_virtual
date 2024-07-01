@@ -127,6 +127,7 @@ class Book(models.Model):
     image = models.ImageField()
     merchant_uuid = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True, null=True, default="")
 
     def save(self, *args, **kwargs):
          
@@ -144,6 +145,32 @@ class Book(models.Model):
 
         self.slug = slugify(value, allow_unicode=True)
         super(Book, self).save(*args, **kwargs)
+
+
+class Noticia(models.Model):
+
+    titulo = models.CharField( max_length=255)
+    imagen = models.ImageField()
+    texto = models.TextField()
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+         
+        value = concatenar_con_aleatorios("name")
+        state = True
+        while state:
+            
+            try:
+                aux = Noticia.objects.get(slug=value)
+                value = concatenar_con_aleatorios("noticia")
+            
+            except:
+
+                state = False
+
+        self.slug = slugify(value, allow_unicode=True)
+        super(Noticia, self).save(*args, **kwargs)
+
 
 """
 @receiver(post_save, sender=Book_File)

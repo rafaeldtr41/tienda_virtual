@@ -6,7 +6,7 @@ from transactions.serializers import *
 from transactions.models import *
 from rest_framework.authentication import TokenAuthentication
 from Book.models import Book
-
+from Book.serializers import Book_Serializer
 from enzona_api.enzona_business_payment import enzona_business_payment
 from rest_framework import permissions
 from transactions.permmisions import User_perm
@@ -128,3 +128,15 @@ class Pay(APIView):
         simple_user = Simple_User_articles.objects.get(user=user)
         simple_user.books.add(book)
         simple_user.books.save()
+
+
+class get_mi_biblioteca_books(APIView):
+
+    permission_classes = [permissions.IsAuthenticated,]
+    authentication_classes = (TokenAuthentication,)
+
+    def get(self, request):
+
+        books = Simple_User_articles.objects.get(user=request.user)
+        serializer = Book_Serializer(books.books.all(), many=True)
+        return Response(serializer.data)

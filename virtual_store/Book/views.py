@@ -173,3 +173,56 @@ class get_photo(viewsets.ModelViewSet):
 
         instance = self.get_object()
         return FileResponse(open(instance.image.path, 'rb'))
+    
+    
+
+class Noticia_View(viewsets.ModelViewSet):
+
+    queryset = Noticia.objects.all()
+    serializer_class = Noticia_Serializer
+    lookup_field = 'slug'
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    authentication_classes = (TokenAuthentication,)
+
+    def get_permissions(self):
+
+        if self.action == "create" or self.action == "delete" or self.action == "update":
+
+            return [permissions.IsAuthenticated(), permissions.IsAdminUser()]
+
+        else: 
+            return []
+
+
+class Noticia_get_Photo_View(APIView):
+
+    def get(self, request, slug):
+
+        #try:
+
+            aux = Noticia.objects.get(slug=slug)
+            path = aux.imagen.path
+            return FileResponse(open(path, 'rb'))
+        
+        #except:
+
+            #return Response({"message":"Imagen no encontrada"}, status=404)
+
+
+class get_free_books(APIView):
+
+    def get(self, request):
+
+        aux = Book.objects.filter(is_free=True)
+        serializer = Book_Serializer(aux, many=True)
+        return Response(serializer.data)
+    
+
+class get_non_free_books(APIView):
+
+    def get(self, request):
+
+        aux = Book.objects.filter(is_free=False)
+        serializer = Book_Serializer(aux, many=True)
+        return Response(serializer.data)
+
